@@ -13,6 +13,7 @@ import Details from "../pages/hr/Details";
 import EmployeeList from "../pages/hr/EmplyeeList";
 import Progress from "../pages/hr/Progress";
 import CheckoutForm from "../pages/PayGate/CheckoutForm";
+import PayGate from "../pages/PayGate/PayGate";
 
 export const router = createBrowserRouter([
   {
@@ -77,6 +78,10 @@ export const router = createBrowserRouter([
       {
         path: '/dashboard/checkout',
         element: <CheckoutForm/>
+      },
+      {
+        path: '/dashboard/payment/:id',
+        element: <PayGate/>
       }
     ]
   }

@@ -1,51 +1,23 @@
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
 import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
-import CheckoutForm from "../PayGate/CheckoutForm"; // import from step 2
-
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+import { useNavigate } from "react-router";
 
 const Payroll = () => {
   const [requests, setRequests] = useState([]);
-  const [payingId, setPayingId] = useState(null); // payment id being paid
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/payments`)
       .then((res) => res.json())
       .then((data) => {
+        console.log("Fetched payments data:", data);
         setRequests(Array.isArray(data) ? data : data.payments || []);
       })
       .catch((err) => console.error("Failed to fetch payments:", err));
   }, []);
 
-  const handlePaymentSuccess = async (id) => {
-    // Update backend to mark payment as paid
-    try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/payments/${id}`, {
-        method: "PATCH",
-      });
-
-      if (res.ok) {
-        const today = new Date().toISOString().split("T")[0];
-        setRequests((prev) =>
-          prev.map((req) =>
-            req._id === id ? { ...req, status: "paid", paymentDate: today } : req
-          )
-        );
-      } else {
-        Swal.fire("Error", "Failed to update payment status", "error");
-      }
-    } catch (err) {
-      Swal.fire("Error", "Payment update request failed", "error");
-    }
+  const handlePay = async (id) => {
+    navigate(`/dashboard/payment/${id}`)
   };
-
-  // Show payment modal
-  const openPaymentModal = (id) => setPayingId(id);
-  const closePaymentModal = () => setPayingId(null);
-
-  const payingRequest = payingId ? requests.find((r) => r._id === payingId) : null;
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-6">
@@ -80,7 +52,8 @@ const Payroll = () => {
                       Paid
                     </button>
                   ) : (
-                    <button className="btn btn-sm btn-success" onClick={() => openPaymentModal(req._id)}>
+                    <button className="btn btn-sm btn-success" onClick={() => handlePay(req._id)}>
+
                       Pay
                     </button>
                   )}
@@ -96,31 +69,6 @@ const Payroll = () => {
           )}
         </tbody>
       </table>
-
-      {/* Payment Modal */}
-      {payingRequest && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-4">
-          <div className="bg-white p-6 rounded max-w-md w-full relative">
-            <button
-              onClick={closePaymentModal}
-              className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
-            >
-              ✕
-            </button>
-            <h3 className="text-xl font-semibold mb-4">
-              Pay {payingRequest.employeeName || "Employee"} - ${Number(payingRequest.amount).toFixed(2)}
-            </h3>
-            <Elements stripe={stripePromise}>
-              <CheckoutForm
-                amount={Number(payingRequest.amount)}
-                paymentId={payingRequest._id}
-                onSuccess={handlePaymentSuccess}
-                onClose={closePaymentModal}
-              />
-            </Elements>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
