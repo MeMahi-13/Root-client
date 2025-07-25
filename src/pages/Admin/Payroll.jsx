@@ -16,7 +16,7 @@ const Payroll = () => {
   }, []);
 
   const handlePay = async (id) => {
-    navigate(`/dashboard/payment/${id}`)
+    navigate(`/dashboard/payment/${id}`);
   };
 
   return (
