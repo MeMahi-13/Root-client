@@ -8,6 +8,7 @@ import { FaArrowLeft, FaChartLine, FaHome, FaListAlt, FaMoneyCheckAlt, FaRegCloc
 const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { role, isPending } = useUserRole();
+  console.log(role)
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
   const handleLinkClick = () => {
@@ -52,9 +53,7 @@ const DashboardLayout = () => {
               <Link to="/dashboard/progress" onClick={handleLinkClick} className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
                 <FaChartLine /> Progress
               </Link>
-              <Link to="/dashboard/payroll" onClick={handleLinkClick} className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
-                <FaMoneyCheckAlt /> Payroll
-              </Link>
+              
             </>
           )}
 
@@ -66,6 +65,9 @@ const DashboardLayout = () => {
               </Link>
               <Link to="/dashboard/all-employees" onClick={handleLinkClick} className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
                 <FaListAlt /> All Employees
+              </Link>
+              <Link to="/dashboard/payroll" onClick={handleLinkClick} className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
+                <FaMoneyCheckAlt /> Payroll
               </Link>
               <Link to="/dashboard/manage-admins" onClick={handleLinkClick} className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
                 <FaUserShield /> Manage Admins
