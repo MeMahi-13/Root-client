@@ -13,17 +13,26 @@ import Details from "../pages/hr/Details";
 import EmployeeList from "../pages/hr/EmplyeeList";
 import Progress from "../pages/hr/Progress";
 import MakeAdmin from "../pages/MakeAdmin";
+import ErrorPage from "../pages/others/ErrorPage";
+import Forbidden from "../pages/others/Forbidden";
 import PayGate from "../pages/PayGate/PayGate";
+import AdminRoute from "./AdminRoute";
+import HRRoute from "./HRRoute";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <HomeLayout />,
+     errorElement: <ErrorPage />,
     children: [
       {
         index: true,
         element: <Home />
       },
+      {
+        path:'/forbidden',
+        element:<Forbidden/>
+      }
     ]
 
   },
@@ -46,6 +55,7 @@ export const router = createBrowserRouter([
     element:
       <DashboardLayout></DashboardLayout>
     ,
+     errorElement: <ErrorPage />,
     children: [
       {
         path: '/dashboard/workSheet',
@@ -57,7 +67,7 @@ export const router = createBrowserRouter([
       },
       {
         path: '/dashboard/employees',
-        element: <EmployeeList />
+        element: <HRRoute><EmployeeList /></HRRoute>
       },
       {
         path: "/dashboard/details/:slug",
@@ -86,7 +96,7 @@ export const router = createBrowserRouter([
       {
          
         path: '/dashboard/makeAdmin',
-        element: <MakeAdmin/>
+        element:<AdminRoute> <MakeAdmin/></AdminRoute>
       
       }
     ]
