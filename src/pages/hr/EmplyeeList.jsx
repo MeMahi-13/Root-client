@@ -133,7 +133,7 @@ const EmployeeList = () => {
               disabled={!emp.isVerified}
               onClick={() => handlePayClick(emp)}
               className={`btn btn-sm ${
-                emp.isVerified ? "btn-primary bg-green-400 px-6 py-2 rounded-md hover:shadow-md hover:shadow-gray-400 cursor:pointer" : "btn-disabled cursor-not-allowed opacity-50"
+                emp.isVerified ? "btn-primary bg-green-400 px-6 py-2 rounded-md hover:shadow-md hover:shadow-gray-400" : "btn-disabled cursor-not-allowed opacity-50"
               }`}
               title={emp.isVerified ? "Pay Employee" : "Verify employee to enable payment"}
             >
