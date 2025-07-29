@@ -13,12 +13,12 @@ signInWithGoogle()
 })
     }
   return (
-    <div className="flex justify-center my-4">
+    <div className=" flex justify-center my-4">
       <button onClick={handleGoogleSignIn}
         aria-label="Sign in with Google"
-        className="
+        className=" cursor-pointer
           flex items-center
-          bg-white border border-gray-200
+          bg-white border border-gray-500
           rounded-md
           p-0.5 pr-4
           hover:shadow-md transition-shadow
@@ -26,11 +26,11 @@ signInWithGoogle()
       >
         <div className="
             flex items-center justify-center
-            bg-white w-9 h-9 rounded-l-md
+            bg-white w-15 h-9 rounded-l-md
           "
         >
           {/* Google SVG logo */}
-          <svg width="16" height="16" viewBox="0 0 512 512">
+          <svg width="22" height="22" viewBox="0 0 512 512">
             <g>
               <path d="M0 0h512v512H0z" fill="#fff" />
               <path
