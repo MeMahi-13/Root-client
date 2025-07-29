@@ -3,6 +3,7 @@ import AuthLayout from "../layouts/AuthLayout";
 import DashboardLayout from "../layouts/DashboardLayout";
 import HomeLayout from "../layouts/HomeLayout";
 import AllEmployeeList from "../pages/Admin/AllEmployeeList";
+import Messages from "../pages/Admin/Messages";
 import Payroll from "../pages/Admin/Payroll";
 import Login from "../pages/Authentication/Login";
 import Register from "../pages/Authentication/Register";
@@ -109,7 +110,13 @@ export const router = createBrowserRouter([
         path: '/dashboard/makeAdmin',
         element:<AdminRoute> <MakeAdmin/></AdminRoute>
       
+      },
+      {
+          
+        path: '/dashboard/messages',
+        element:<Messages/>
       }
+
     ]
   }
 ]);
