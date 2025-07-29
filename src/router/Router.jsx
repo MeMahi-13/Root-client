@@ -6,6 +6,7 @@ import AllEmployeeList from "../pages/Admin/AllEmployeeList";
 import Payroll from "../pages/Admin/Payroll";
 import Login from "../pages/Authentication/Login";
 import Register from "../pages/Authentication/Register";
+import ContactUs from "../pages/Contact";
 import Dashboard from "../pages/Dashboard";
 import PaymentHistory from "../pages/employee/PaymentHistory";
 import WorkSheet from "../pages/employee/WorkSheet";
@@ -48,6 +49,10 @@ export const router = createBrowserRouter([
       {
         path: 'register',
         element: <Register />
+      },
+      {
+        path: 'contact-us',
+        element: <ContactUs />
       }
     ]
   },
