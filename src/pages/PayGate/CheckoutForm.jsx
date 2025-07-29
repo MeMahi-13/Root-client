@@ -65,9 +65,9 @@ const CheckoutForm = () => {
         });
 
         if (result.error) {
-            console.log(result.error.message);
+            // console.log(result.error.message);
         } else if (result.paymentIntent.status === 'succeeded') {
-            console.log('✅ Payment succeeded!');
+            // console.log('✅ Payment succeeded!');
 
             try {
                 await axiosSecure.patch(`/payments/${paymentId}`);

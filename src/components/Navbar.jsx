@@ -26,7 +26,7 @@ const Navbar = () => {
   return (
     <header className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
       <div className="flex items-center justify-between py-4 px-6 md:px-10">
-        <Link to="/" className="text-xl font-bold">Root</Link>
+        <Link to="/" className="heading-script text-black text-5xl font-bold">Root</Link>
 
         {/* Desktop Content */}
         <nav className="hidden md:flex items-center space-x-6 relative">

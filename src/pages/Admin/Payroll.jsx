@@ -9,7 +9,7 @@ const Payroll = () => {
     fetch(`${import.meta.env.VITE_API_URL}/payments`)
       .then((res) => res.json())
       .then((data) => {
-        console.log("Fetched payments data:", data);
+        // console.log("Fetched payments data:", data);
         setRequests(Array.isArray(data) ? data : data.payments || []);
       })
       .catch((err) => console.error("Failed to fetch payments:", err));

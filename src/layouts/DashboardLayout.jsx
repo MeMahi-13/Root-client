@@ -122,7 +122,7 @@ const DashboardLayout = () => {
                 <FaMoneyCheckAlt /> Messages
               </Link>
               <Link
-                to="/dashboard/manage-admins"
+                to="/dashboard/makeAdmin"
                 onClick={handleLinkClick}
                 className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded transition"
               >

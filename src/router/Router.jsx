@@ -59,8 +59,7 @@ export const router = createBrowserRouter([
   },
   {
     path: '/dashboard',
-    element:
-      <DashboardLayout></DashboardLayout>
+    element:<PrivateRoute> <DashboardLayout></DashboardLayout></PrivateRoute>
     ,
      errorElement: <ErrorPage />,
     children: [
@@ -82,28 +81,24 @@ export const router = createBrowserRouter([
       },
       {
         path: "/dashboard/details/:slug",
-        element: <Details email="alice1@gmail.com" />
+        element: <HRRoute><Details /></HRRoute>
 
       },
             {
         path: "/dashboard/progress",
-        element: <Progress />
+        element: <HRRoute><Progress /></HRRoute>
       },
        {
         path: "/dashboard/all-employees",
-        element: <AllEmployeeList />,
+        element:<AdminRoute> <AllEmployeeList /></AdminRoute>
       },
        {
         path: "/dashboard/payroll",
-        element: <Payroll />,
+        element: <AdminRoute><Payroll /></AdminRoute>
       },
-      // {
-      //   path: '/dashboard/checkout',
-      //   element: <CheckoutForm/>
-      // },
       {
         path: '/dashboard/payment/:paymentId',
-        element: <PayGate/>
+        element: <AdminRoute><PayGate/></AdminRoute>
       },
       {
          
@@ -114,7 +109,7 @@ export const router = createBrowserRouter([
       {
           
         path: '/dashboard/messages',
-        element:<Messages/>
+        element:<AdminRoute><Messages/></AdminRoute>
       }
 
     ]
