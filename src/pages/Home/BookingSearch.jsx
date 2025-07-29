@@ -8,14 +8,14 @@ export default function BookingSearch() {
   const [promo, setPromo] = useState('');
 
   return (
-    <section className=" my-5 p-20 bg-purple-200 ">
-      <h1 className='text-4xl mx-40 px-40 pb-15'>"Root invites you to leave everything that is familiar to you behind and experience the mountain in its archaic natural state ..."
-<br></br>
-<span className='text-xl'>
-  Your hosts at Root
-</span>
-</h1>
-      <div className="flex flex-col md:flex-row items-center gap-4">
+    <section className="my-8 bg-purple-200 px-4 sm:px-8 md:px-20 py-8 max-w-screen-xl mx-auto rounded-lg">
+      <h1 className="text-2xl sm:text-3xl md:text-4xl text-center md:text-left max-w-screen-md mx-auto mb-6">
+        "Root invites you to leave everything that is familiar to you behind and experience the mountain in its archaic natural state …"
+        <br />
+        <span className="text-xl block mt-2">Your hosts at Root</span>
+      </h1>
+
+      <div className="flex flex-col gap-4 md:flex-row md:gap-6">
         {/* Arrival */}
         <div className="flex flex-col flex-1">
           <label className="text-sm font-medium text-gray-700">Arrival</label>
@@ -48,8 +48,10 @@ export default function BookingSearch() {
             onChange={(e) => setGuests(Number(e.target.value))}
             className="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
           >
-            {[1,2,3,4,5].map((n) => (
-              <option key={n} value={n}>{n} {n === 1 ? 'Guest' : 'Guests'}</option>
+            {[1, 2, 3, 4, 5].map((n) => (
+              <option key={n} value={n}>
+                {n} {n === 1 ? 'Guest' : 'Guests'}
+              </option>
             ))}
           </select>
         </div>
@@ -70,8 +72,14 @@ export default function BookingSearch() {
         <div className="flex-1 md:flex-none">
           <button
             type="button"
+            onClick={() =>
+              alert(
+                `Searching stays: ${arrival || '–'} → ${
+                  departure || '–'
+                }, ${guests} guest(s), promo: ${promo || '–'}`
+              )
+            }
             className="mt-4 md:mt-6 w-full md:w-auto px-6 py-3 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition"
-            onClick={() => alert(`Searching stays: ${arrival} → ${departure}, ${guests} guests, promo: ${promo}`)}
           >
             Reserve &raquo;
           </button>
