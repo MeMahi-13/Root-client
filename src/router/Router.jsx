@@ -76,7 +76,8 @@ export const router = createBrowserRouter([
       },
       {
         path: "/dashboard/details/:slug",
-        element: <Details />
+        element: <Details email="alice1@gmail.com" />
+
       },
             {
         path: "/dashboard/progress",

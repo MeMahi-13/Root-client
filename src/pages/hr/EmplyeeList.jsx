@@ -151,7 +151,7 @@ const EmployeeList = () => {
             <button
               className="btn btn-sm btn-info"
               onClick={() =>
-                navigate(`/dashboard/details/${encodeURIComponent(emp.email)}`)
+                navigate(`/dashboard/details/${emp.email}`)
               }
               title="View Details"
             >

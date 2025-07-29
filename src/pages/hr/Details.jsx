@@ -1,6 +1,6 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import {
   Bar,
   BarChart,
@@ -10,37 +10,39 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-} from 'recharts';
+} from "recharts";
 
 const EmployeeDetails = () => {
-  const { slug } = useParams();
+  const { slug } = useParams(); // slug is the employee email
   const [employee, setEmployee] = useState(null);
   const [salaryData, setSalaryData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch both employee details and salary chart
-    const fetchData = async () => {
+    const fetchDetails = async () => {
       try {
-        const encodedSlug = encodeURIComponent(slug);
-        // Fetch user by email:
-        const userRes = await axios.get(`${import.meta.env.VITE_API_URL}/users/email/${encodedSlug}`);
-        const salaryRes = await axios.get(`${import.meta.env.VITE_API_URL}/salary-chart/${encodedSlug}`);
-        setEmployee(userRes.data);
-        setSalaryData(
-          salaryRes.data.map((item) => ({
-            monthYear: `${item.month}-${item.year}`,
-            salary: item.amount, // adjust if needed
-          }))
-        );
+        const encoded = encodeURIComponent(slug);
+
+        // 1. Get user info
+        const res1 = await axios.get(`${import.meta.env.VITE_API_URL}/users/email/${encoded}`);
+        setEmployee(res1.data);
+
+        // 2. Get salary chart data
+        const res2 = await axios.get(`${import.meta.env.VITE_API_URL}/salary-chart/${encoded}`);
+        const chartData = res2.data.map((item) => ({
+          monthYear: `${item.month} ${item.year}`,
+          amount: item.amount,
+        }));
+
+        setSalaryData(chartData);
       } catch (err) {
-        console.error("Error fetching data:", err);
+        console.error("Error fetching employee detail/chart:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
+    fetchDetails();
   }, [slug]);
 
   if (loading) return <p className="text-center mt-10">Loading...</p>;
@@ -52,7 +54,7 @@ const EmployeeDetails = () => {
         <img
           src={employee.photoURL}
           alt={employee.name}
-          className="w-32 h-32 rounded-full object-cover shadow-md"
+          className="w-32 h-32 rounded-full object-cover shadow"
         />
         <div>
           <h2 className="text-3xl font-semibold">{employee.name}</h2>
@@ -62,37 +64,22 @@ const EmployeeDetails = () => {
       </div>
 
       <h3 className="text-2xl font-semibold mb-4">Salary History</h3>
-      <div className="w-full h-96 bg-white rounded-xl shadow p-4">
-       <ResponsiveContainer width="100%" height="100%">
-  <BarChart
-    data={salaryData}
-    margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
-  >
-    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-    <XAxis
-      dataKey="monthYear"
-      angle={-35}
-      textAnchor="end"
-      interval={0}
-      height={60}
-      tick={{ fontSize: 12, fill: "#334155" }}
-      label={{ value: 'Month-Year', position: 'insideBottom', dy: 45, style: { fill: '#475569', fontSize: 14 } }}
-    />
-    <YAxis
-      tick={{ fontSize: 12, fill: "#334155" }}
-      label={{ value: 'Salary (BDT)', angle: -90, position: 'insideLeft', dx: -10, style: { fill: '#475569', fontSize: 14 } }}
-    />
-    <Tooltip
-      contentStyle={{ backgroundColor: "#f9fafb", border: "1px solid #e5e7eb" }}
-      labelStyle={{ fontSize: 13, color: "#1f2937" }}
-      itemStyle={{ fontSize: 13, color: "#1f2937" }}
-    />
-    <Legend wrapperStyle={{ fontSize: 13, color: "#475569", paddingTop: 10 }} />
-    <Bar dataKey="salary" fill="#6366f1" radius={[8, 8, 0, 0]} barSize={40} name="Monthly Salary" />
-  </BarChart>
-</ResponsiveContainer>
-
-      </div>
+      {salaryData.length > 0 ? (
+        <div className="w-full h-96 bg-white rounded-xl shadow p-4">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={salaryData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="monthYear" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="amount" fill="#4f46e5" name="Salary (BDT)" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      ) : (
+        <p className="text-center text-gray-500 mt-10">No paid salary data yet.</p>
+      )}
     </div>
   );
 };
