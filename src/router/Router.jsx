@@ -21,6 +21,7 @@ import Forbidden from "../pages/others/Forbidden";
 import PayGate from "../pages/PayGate/PayGate";
 import AdminRoute from "./AdminRoute";
 import HRRoute from "./HRRoute";
+import PrivateRoute from "./PrivateRoute";
 
 export const router = createBrowserRouter([
   {
