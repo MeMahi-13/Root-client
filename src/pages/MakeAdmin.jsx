@@ -69,7 +69,7 @@ const MakeAdmin = () => {
                   ) : (
                     <button
                       onClick={() => handleMakeAdmin(user._id)}
-                      className="btn btn-sm bg-blue-600 text-white"
+                      className="btn btn-sm bg-blue-600 px-6 py-2 rounded-md text-white"
                     >
                       Make Admin
                     </button>
