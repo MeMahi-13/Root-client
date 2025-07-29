@@ -103,8 +103,33 @@ export default function Register() {
 
           {/* Profile Photo */}
           <div className="md:col-span-2">
-            <label className="block mb-1 text-gray-700">Profile Photo</label>
-            <input type="file" accept="image/*" onChange={handleImageUpload} className="input w-full" />
+            <div className="md:col-span-2">
+  <label className="block mb-1 text-gray-700">Profile Photo</label>
+
+  <label
+    htmlFor="profilePicInput"
+    className="cursor-pointer inline-block px-4 py-2 bg-amber-400 text-white rounded-md hover:bg-amber-500 transition"
+  >
+    Choose Profile Photo
+  </label>
+  <input
+    id="profilePicInput"
+    type="file"
+    accept="image/*"
+    onChange={handleImageUpload}
+    className="hidden"
+  />
+
+  {profilePic && (
+    <img
+      src={profilePic}
+      alt="Profile Preview"
+      className="mt-3 w-24 h-24 rounded-full object-cover border-2 border-amber-400"
+    />
+  )}
+</div>
+
+           
           </div>
 
           {/* Role */}
@@ -189,7 +214,7 @@ export default function Register() {
           </div>
         </div>
 
-        <button type="submit" disabled={isSubmitting} className="btn btn-primary w-full cursor-pointer hover:shadow-amber-900 hover:shadow-md p-3 rounded-full bg-amber-400 mt-6">
+        <button type="submit" disabled={isSubmitting} className="btn btn-primary w-full cursor-pointer hover:shadow-amber-900 hover:shadow-md p-3 rounded-full bg-amber-400 mt-6 text-white">
           {isSubmitting ? "Registering…" : "Register"}
         </button>
 

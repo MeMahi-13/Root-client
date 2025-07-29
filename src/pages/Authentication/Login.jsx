@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import UseAuth from "../../hooks/UseAuth"; // adjust path as needed
+import Social from "./Social";
 
 const Login = () => {
   const {
@@ -118,7 +119,16 @@ const Login = () => {
           Register
         </Link>
       </p>
+<div className="my-4 text-center text-gray-500 relative">
+  <div className="absolute inset-0 flex items-center">
+    <div className="w-full border-t border-gray-300"></div>
+  </div>
+  <span className="relative px-2 bg-white">Or continue with</span>
+</div>
+
+      <Social/>
       </form>
+      
     </div>
   );
 };
