@@ -39,7 +39,7 @@ const ContactUs = () => {
           <label className="font-medium">Your Email</label>
           <input
             type="email"
-            className="input input-bordered w-full"
+            className="input input-bordered w-full border-2 border-gray-300"
             {...register("email", { required: true })}
           />
           {errors.email && <p className="text-red-500 text-sm">Email is required</p>}
@@ -48,13 +48,13 @@ const ContactUs = () => {
         <div>
           <label className="font-medium">Message</label>
           <textarea
-            className="textarea textarea-bordered w-full h-32"
+            className="textarea textarea-bordered w-full h-32 border-2 border-gray-300"
             {...register("message", { required: true })}
           ></textarea>
           {errors.message && <p className="text-red-500 text-sm">Message is required</p>}
         </div>
 
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="btn btn-primary border-2 border-green-400 p-2 rounded-md">
           Send Message
         </button>
       </form>
