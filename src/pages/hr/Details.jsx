@@ -23,17 +23,18 @@ const EmployeeDetails = () => {
     const fetchData = async () => {
       try {
         const encodedSlug = encodeURIComponent(slug);
-       const userRes = await axios.get(`${import.meta.env.VITE_API_URL}/users/${encodedSlug}`);
-const salaryRes = await axios.get(`${import.meta.env.VITE_API_URL}/salary-chart/${encodedSlug}`);
+        // Fetch user by email:
+        const userRes = await axios.get(`${import.meta.env.VITE_API_URL}/users/email/${encodedSlug}`);
+        const salaryRes = await axios.get(`${import.meta.env.VITE_API_URL}/salary-chart/${encodedSlug}`);
         setEmployee(userRes.data);
         setSalaryData(
           salaryRes.data.map((item) => ({
             monthYear: `${item.month}-${item.year}`,
-            salary: item.salary,
+            salary: item.amount, // adjust if needed
           }))
         );
       } catch (err) {
-        console.error('Error fetching data:', err);
+        console.error("Error fetching data:", err);
       } finally {
         setLoading(false);
       }
@@ -75,42 +76,19 @@ const salaryRes = await axios.get(`${import.meta.env.VITE_API_URL}/salary-chart/
       interval={0}
       height={60}
       tick={{ fontSize: 12, fill: "#334155" }}
-      label={{
-        value: 'Month-Year',
-        position: 'insideBottom',
-        dy: 45,
-        style: { fill: '#475569', fontSize: 14 },
-      }}
+      label={{ value: 'Month-Year', position: 'insideBottom', dy: 45, style: { fill: '#475569', fontSize: 14 } }}
     />
     <YAxis
       tick={{ fontSize: 12, fill: "#334155" }}
-      label={{
-        value: 'Salary (BDT)',
-        angle: -90,
-        position: 'insideLeft',
-        dx: -10,
-        style: { fill: '#475569', fontSize: 14 },
-      }}
+      label={{ value: 'Salary (BDT)', angle: -90, position: 'insideLeft', dx: -10, style: { fill: '#475569', fontSize: 14 } }}
     />
     <Tooltip
       contentStyle={{ backgroundColor: "#f9fafb", border: "1px solid #e5e7eb" }}
       labelStyle={{ fontSize: 13, color: "#1f2937" }}
       itemStyle={{ fontSize: 13, color: "#1f2937" }}
     />
-    <Legend
-      wrapperStyle={{
-        fontSize: 13,
-        color: "#475569",
-        paddingTop: 10,
-      }}
-    />
-    <Bar
-      dataKey="salary"
-      fill="#6366f1"
-      radius={[8, 8, 0, 0]}
-      barSize={40}
-      name="Monthly Salary"
-    />
+    <Legend wrapperStyle={{ fontSize: 13, color: "#475569", paddingTop: 10 }} />
+    <Bar dataKey="salary" fill="#6366f1" radius={[8, 8, 0, 0]} barSize={40} name="Monthly Salary" />
   </BarChart>
 </ResponsiveContainer>
 
