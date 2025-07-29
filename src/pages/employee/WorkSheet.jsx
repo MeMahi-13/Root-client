@@ -3,6 +3,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Controller, useForm } from "react-hook-form";
 import Modal from "react-modal";
+import Swal from "sweetalert2";
 import UseAuth from "../../hooks/UseAuth";
 import useAxios from "../../hooks/useAxios";
 
@@ -58,7 +59,7 @@ const WorkSheet = () => {
       const res = await axiosSecure.post("/work-entries", newEntry);
       if (res.data.insertedId || res.data.acknowledged) {
         setEntries([...entries, { ...newEntry, _id: res.data.insertedId }]);
-        reset(); // clear form
+        reset();
       } else {
         console.error("Failed to save entry");
       }
@@ -103,107 +104,159 @@ const WorkSheet = () => {
     }
   };
 
-  const deleteEntry = async (index) => {
-    const entry = entries[index];
+  const deleteEntry = async idx => {
+    const entry = entries[idx];
+    const confirm = await Swal.fire({
+      title: "Are you sure?",
+      text: "This entry will be deleted permanently.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!"
+    });
+    if (!confirm.isConfirmed) return;
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/work-entries/${entry._id}`, {
-        method: "DELETE",
-      });
-
-      if (!res.ok) throw new Error("Failed to delete");
-
-      const updated = [...entries];
-      updated.splice(index, 1);
-      setEntries(updated);
+      const res = await axiosSecure.delete(`/work-entries/${entry._id}`);
+      if (res.status === 200) {
+        const updated = entries.filter((_, i) => i !== idx);
+        setEntries(updated);
+        await Swal.fire("Deleted!", "Work entry has been deleted.", "success");
+      }
     } catch (err) {
       console.error(err);
-      alert("Error deleting entry");
+      Swal.fire("Error", "Could not delete entry.", "error");
     }
   };
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
-      <h2 className="text-2xl font-semibold mb-4">Work Sheet</h2>
+      <h2 className="text-3xl font-bold mb-6 text-gray-800">Work Sheet</h2>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="flex gap-4 items-center mb-6 flex-wrap">
-        <select
-          {...register("task", { required: "Task is required" })}
-          className="input input-bordered"
-          defaultValue=""
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-wrap gap-4 items-end bg-white p-6 rounded-lg shadow-md border border-gray-200"
+      >
+        <div className="flex flex-col w-40">
+          <label className="mb-1 font-semibold text-gray-700">Task</label>
+          <select
+            {...register("task", { required: "Task is required" })}
+            className={`rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400 ${
+              errors.task ? "border-red-500" : "border-gray-300"
+            }`}
+            defaultValue=""
+          >
+            <option value="" disabled>
+              Select Task
+            </option>
+            {tasksOptions.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
+          {errors.task && <p className="text-red-500 text-sm mt-1">{errors.task.message}</p>}
+        </div>
+
+        <div className="flex flex-col w-28">
+          <label className="mb-1 font-semibold text-gray-700">Hours Worked</label>
+          <input
+            type="number"
+            {...register("hoursWorked", {
+              required: "Hours worked is required",
+              min: { value: 0.1, message: "Must be positive" },
+              max: { value: 24, message: "Max 24 hours" },
+            })}
+            placeholder="Hours"
+            step="0.1"
+            className={`rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400 ${
+              errors.hoursWorked ? "border-red-500" : "border-gray-300"
+            }`}
+          />
+          {errors.hoursWorked && <p className="text-red-500 text-sm mt-1">{errors.hoursWorked.message}</p>}
+        </div>
+
+        <div className="flex flex-col w-44">
+          <label className="mb-1 font-semibold text-gray-700">Date</label>
+          <Controller
+            control={control}
+            name="date"
+            rules={{ required: "Date is required" }}
+            render={({ field }) => (
+              <DatePicker
+                selected={field.value}
+                onChange={(date) => field.onChange(date)}
+                className={`rounded-md border px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-amber-400 ${
+                  errors.date ? "border-red-500" : "border-gray-300"
+                }`}
+                dateFormat="yyyy-MM-dd"
+                maxDate={new Date()}
+                placeholderText="Select date"
+              />
+            )}
+          />
+          {errors.date && <p className="text-red-500 text-sm mt-1">{errors.date.message}</p>}
+        </div>
+
+        <button
+          type="submit"
+          className="bg-amber-400 hover:bg-amber-500 text-white font-semibold rounded-md px-6 py-2 transition shadow-md focus:outline-none focus:ring-2 focus:ring-amber-400"
         >
-          <option value="" disabled>Select Task</option>
-          {tasksOptions.map((t) => (
-            <option key={t} value={t}>{t}</option>
-          ))}
-        </select>
-        {errors.task && <p className="text-red-500 text-sm">{errors.task.message}</p>}
-
-        <input
-          type="number"
-          {...register("hoursWorked", {
-            required: "Hours worked is required",
-            min: { value: 0.1, message: "Must be positive" },
-            max: { value: 24, message: "Max 24 hours" },
-          })}
-          placeholder="Hours Worked"
-          step="0.1"
-          className="input input-bordered w-24"
-        />
-        {errors.hoursWorked && <p className="text-red-500 text-sm">{errors.hoursWorked.message}</p>}
-
-        <Controller
-          control={control}
-          name="date"
-          rules={{ required: "Date is required" }}
-          render={({ field }) => (
-            <DatePicker
-              selected={field.value}
-              onChange={(date) => field.onChange(date)}
-              className="input input-bordered w-40"
-              dateFormat="yyyy-MM-dd"
-              maxDate={new Date()}
-              placeholderText="Select date"
-            />
-          )}
-        />
-        {errors.date && <p className="text-red-500 text-sm">{errors.date.message}</p>}
-
-        <button type="submit" className="btn btn-primary">Add</button>
+          Add
+        </button>
       </form>
 
-      <table className="table-auto w-full border-collapse border border-gray-300">
-        <thead>
-          <tr>
-            <th className="border px-3 py-1">Task</th>
-            <th className="border px-3 py-1">Hours</th>
-            <th className="border px-3 py-1">Date</th>
-            <th className="border px-3 py-1">Actions</th>
-          </tr>
-        </thead>
-       <tbody>
-  {entries.length === 0 ? (
-    <tr>
-      <td colSpan={4} className="text-center py-4">No work entries yet</td>
-    </tr>
-  ) : (
-    [...entries]
-      .sort((a, b) => new Date(b.date) - new Date(a.date))
-      .map((entry, idx) => (
-        <tr key={entry._id || idx}>
-          <td className="border px-3 py-1">{entry.task}</td>
-          <td className="border px-3 py-1">{entry.hoursWorked}</td>
-          <td className="border px-3 py-1">{new Date(entry.date).toLocaleDateString()}</td>
-          <td className="border px-3 py-1 flex gap-2 justify-center">
-            <button className="btn btn-sm btn-warning" onClick={() => openEditModal(idx)}>Edit</button>
-            <button className="btn btn-sm btn-error" onClick={() => deleteEntry(idx)}>Delete</button>
-          </td>
-        </tr>
-      ))
-  )}
-</tbody>
-
-      </table>
+      <div className="mt-8 overflow-x-auto rounded-lg shadow-md border border-gray-200 bg-white">
+        <table className="w-full text-left border-collapse">
+          <thead className="bg-gray-700 text-white">
+            <tr>
+              <th className="px-4 py-2 font-semibold">Task</th>
+              <th className="px-4 py-2 font-semibold">Hours</th>
+              <th className="px-4 py-2 font-semibold">Date</th>
+              <th className="px-4 py-2 font-semibold text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {entries.length === 0 ? (
+              <tr>
+                <td colSpan={4} className="text-center py-6 text-gray-600">
+                  No work entries yet
+                </td>
+              </tr>
+            ) : (
+              [...entries]
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .map((entry, idx) => (
+                  <tr
+                    key={entry._id || idx}
+                    className="border-t hover:bg-gray-50 transition"
+                  >
+                    <td className="px-4 py-3">{entry.task}</td>
+                    <td className="px-4 py-3">{entry.hoursWorked}</td>
+                    <td className="px-4 py-3">
+                      {new Date(entry.date).toLocaleDateString()}
+                    </td>
+                    <td className="px-4 py-3 flex justify-center gap-3">
+                      <button
+                        className="bg-yellow-400 hover:bg-yellow-500 text-white rounded-md px-3 py-1 transition shadow"
+                        onClick={() => openEditModal(idx)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="bg-red-500 hover:bg-red-600 text-white rounded-md px-3 py-1 transition shadow"
+                        onClick={() => deleteEntry(idx)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+            )}
+          </tbody>
+        </table>
+      </div>
 
       <Modal
         isOpen={modalIsOpen}
@@ -212,12 +265,21 @@ const WorkSheet = () => {
         className="bg-white rounded-lg max-w-md mx-auto p-6 mt-20 shadow-lg outline-none"
         overlayClassName="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-start z-50"
       >
-        <h3 className="text-xl mb-4 font-semibold">Edit Work Entry</h3>
-        <form onSubmit={handleSubmitEdit(onUpdate)} className="flex flex-col gap-4">
-          <select {...registerEdit("editTask", { required: "Task is required" })} className="input input-bordered">
-            <option value="" disabled>Select Task</option>
+        <h3 className="text-2xl mb-6 font-bold text-gray-800">Edit Work Entry</h3>
+        <form onSubmit={handleSubmitEdit(onUpdate)} className="flex flex-col gap-5">
+          <select
+            {...registerEdit("editTask", { required: "Task is required" })}
+            className={`rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400 ${
+              errorsEdit.editTask ? "border-red-500" : "border-gray-300"
+            }`}
+          >
+            <option value="" disabled>
+              Select Task
+            </option>
             {tasksOptions.map((t) => (
-              <option key={t} value={t}>{t}</option>
+              <option key={t} value={t}>
+                {t}
+              </option>
             ))}
           </select>
           {errorsEdit.editTask && <p className="text-red-500 text-sm">{errorsEdit.editTask.message}</p>}
@@ -231,28 +293,42 @@ const WorkSheet = () => {
             })}
             placeholder="Hours Worked"
             step="0.1"
-            className="input input-bordered w-full"
+            className={`rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400 ${
+              errorsEdit.editHoursWorked ? "border-red-500" : "border-gray-300"
+            }`}
           />
           {errorsEdit.editHoursWorked && <p className="text-red-500 text-sm">{errorsEdit.editHoursWorked.message}</p>}
 
           <DatePicker
             selected={watchEdit("editDate")}
             onChange={(date) => setValueEdit("editDate", date, { shouldValidate: true })}
-            className="input input-bordered w-full"
+            className={`rounded-md border px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-amber-400 ${
+              errorsEdit.editDate ? "border-red-500" : "border-gray-300"
+            }`}
             dateFormat="yyyy-MM-dd"
             maxDate={new Date()}
           />
           {errorsEdit.editDate && <p className="text-red-500 text-sm">{errorsEdit.editDate.message}</p>}
 
-          <div className="flex justify-end gap-2">
-            <button type="button" className="btn btn-secondary" onClick={() => setModalIsOpen(false)}>
+          <div className="flex justify-end gap-3">
+            <button
+              type="button"
+              className="bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-md px-5 py-2 transition"
+              onClick={() => setModalIsOpen(false)}
+            >
               Cancel
             </button>
-            <button type="submit" className="btn btn-primary">Update</button>
+            <button
+              type="submit"
+              className="bg-amber-400 hover:bg-amber-500 text-white font-semibold rounded-md px-5 py-2 transition shadow-md"
+            >
+              Update
+            </button>
           </div>
         </form>
       </Modal>
     </div>
   );
 };
+
 export default WorkSheet;

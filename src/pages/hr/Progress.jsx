@@ -14,19 +14,29 @@ const Progress = () => {
   ];
 
   useEffect(() => {
+    // Fetch employee data from the 'users' database
     axiosSecure.get("/users?role=employee").then((res) => {
       setEmployees(res.data);
     });
   }, [axiosSecure]);
 
   useEffect(() => {
+    // Construct query parameters based on selected filters
     let query = "";
     if (selectedEmail) query += `email=${selectedEmail}&`;
     if (selectedMonth) query += `month=${selectedMonth}`;
+
+    // Fetch work entries from the 'work' database
     axiosSecure.get(`/work-entries?${query}`).then((res) => {
       setEntries(res.data);
     });
   }, [selectedEmail, selectedMonth, axiosSecure]);
+
+  // Function to get employee name by email
+  const getEmployeeName = (email) => {
+    const employee = employees.find(emp => emp.email === email);
+    return employee ? employee.name : "Unknown";
+  };
 
   return (
     <div className="max-w-6xl mx-auto p-4">
@@ -73,7 +83,7 @@ const Progress = () => {
           ) : (
             entries.map((entry, idx) => (
               <tr key={idx}>
-                <td className="border px-3 py-2">{entry.email}</td>
+                <td className="border px-3 py-2">{getEmployeeName(entry.email)}</td>
                 <td className="border px-3 py-2">{entry.task}</td>
                 <td className="border px-3 py-2">{entry.hoursWorked}</td>
                 <td className="border px-3 py-2">{new Date(entry.date).toLocaleDateString()}</td>

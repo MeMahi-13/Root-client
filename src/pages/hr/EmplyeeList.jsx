@@ -1,8 +1,8 @@
 import {
-    createColumnHelper,
-    flexRender,
-    getCoreRowModel,
-    useReactTable,
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
 } from "@tanstack/react-table";
 import { useEffect, useMemo, useState } from "react";
 import Modal from "react-modal";
@@ -22,38 +22,49 @@ const EmployeeList = () => {
   const [year, setYear] = useState("");
 
   useEffect(() => {
-    const fetchEmployees = async () => {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/users?role=employee`);
-      const data = await res.json();
-      setEmployees(data);
-    };
-    fetchEmployees();
+    fetch(`${import.meta.env.VITE_API_URL}/users?role=Employee`)
+      .then((res) => res.json())
+      .then((data) => {
+        setEmployees(data);
+      })
+      .catch(console.error);
   }, []);
 
-  const toggleVerify = async (employee) => {
-    const updated = { isVerified: !employee.isVerified };
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/users/${employee._id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updated),
-    });
+  const toggleVerify = async (emp) => {
+    const updated = { isVerified: !emp.isVerified };
+    const res = await fetch(
+      `${import.meta.env.VITE_API_URL}/users/${emp._id}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updated),
+      }
+    );
 
     if (res.ok) {
       setEmployees((prev) =>
-        prev.map((emp) =>
-          emp._id === employee._id ? { ...emp, isVerified: updated.isVerified } : emp
+        prev.map((e) =>
+          e._id === emp._id ? { ...e, isVerified: updated.isVerified } : e
         )
       );
+    } else {
+      Swal.fire("Error", "Failed to update verification", "error");
     }
   };
 
-  const handlePayClick = (employee) => {
-    setSelectedEmployee(employee);
+  const handlePayClick = (emp) => {
+    setSelectedEmployee(emp);
+    setMonth("");
+    setYear("");
     setModalIsOpen(true);
   };
 
   const handlePaySubmit = async () => {
-    const newPayment = {
+    if (!month || !year) {
+      return Swal.fire("Error", "Month and Year required", "error");
+    }
+
+    const payload = {
       employeeId: selectedEmployee._id,
       email: selectedEmployee.email,
       amount: selectedEmployee.salary,
@@ -65,141 +76,167 @@ const EmployeeList = () => {
     const res = await fetch(`${import.meta.env.VITE_API_URL}/payments`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newPayment),
+      body: JSON.stringify(payload),
     });
 
     if (res.ok) {
-      Swal.fire("Success", "Payment request sent for approval", "success");
+      Swal.fire("Success", "Payment request sent", "success");
       setModalIsOpen(false);
-      setMonth("");
-      setYear("");
     } else {
-      Swal.fire("Error", "Failed to send payment request", "error");
+      Swal.fire("Error", "Failed to send payment", "error");
     }
   };
 
   const columnHelper = createColumnHelper();
 
-  const columns = useMemo(() => [
-    columnHelper.accessor("name", {
-      header: "Name",
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("email", {
-      header: "Email",
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.display({
-      id: "verified",
-      header: "Verified",
-      cell: ({ row }) => {
-        const emp = row.original;
-        return (
-          <button onClick={() => toggleVerify(emp)}>
-            {emp.isVerified ? "✅" : "❌"}
-          </button>
-        );
-      },
-    }),
-    columnHelper.accessor("bankAccount", {
-      header: "Bank Account",
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("salary", {
-      header: "Salary",
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.display({
-      id: "pay",
-      header: "Pay",
-      cell: ({ row }) => {
-        const emp = row.original;
-        return (
-          <button
-            onClick={() => handlePayClick(emp)}
-            className="btn btn-sm btn-primary"
-            disabled={!emp.isVerified}
-          >
-            Pay
-          </button>
-        );
-      },
-    }),
-    columnHelper.display({
-      id: "details",
-      header: "Details",
-      cell: ({ row }) => {
-        const emp = row.original;
-        return (
-          <button
-            onClick={() => navigate(`/dashboard/details/${encodeURIComponent(emp.email)}`)}
-            className="btn btn-sm btn-info"
-          >
-            Details
-          </button>
-        );
-      },
-    }),
-  ], []);
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor("name", {
+        header: "Name",
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("email", {
+        header: "Email",
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.display({
+        id: "verified",
+        header: "Verified",
+        cell: ({ row }) => {
+          const emp = row.original;
+          return (
+            <button
+              className="text-xl"
+              onClick={() => toggleVerify(emp)}
+              title="Toggle verification"
+            >
+              {emp.isVerified ? "✅" : "❌"}
+            </button>
+          );
+        },
+      }),
+      columnHelper.accessor("bank_account_no", {
+        header: "Bank Account",
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("salary", {
+        header: "Salary",
+        cell: (info) => `$${info.getValue()}`,
+      }),
+      columnHelper.display({
+        id: "pay",
+        header: "Pay",
+        cell: ({ row }) => {
+          const emp = row.original;
+          return (
+            <button
+              disabled={!emp.isVerified}
+              onClick={() => handlePayClick(emp)}
+              className={`btn btn-sm ${
+                emp.isVerified ? "btn-primary bg-green-400 px-6 py-2 rounded-md hover:shadow-md hover:shadow-gray-400 cursor:pointer" : "btn-disabled cursor-not-allowed opacity-50"
+              }`}
+              title={emp.isVerified ? "Pay Employee" : "Verify employee to enable payment"}
+            >
+              Pay
+            </button>
+          );
+        },
+      }),
+      columnHelper.display({
+        id: "details",
+        header: "Details",
+        cell: ({ row }) => {
+          const emp = row.original;
+          return (
+            <button
+              className="btn btn-sm btn-info"
+              onClick={() =>
+                navigate(`/dashboard/details/${encodeURIComponent(emp.email)}`)
+              }
+              title="View Details"
+            >
+              Details
+            </button>
+          );
+        },
+      }),
+    ],
+    []
+  );
 
   const table = useReactTable({
-    data: employees,
+    data: employees || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getRowId: (row) => row._id,
   });
 
   return (
-    <div className="max-w-7xl mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Employee List</h2>
-
-      <table className="table w-full border">
-        <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th key={header.id} className="border px-4 py-2 bg-gray-100">
-                  {flexRender(header.column.columnDef.header, header.getContext())}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.length === 0 ? (
-            <tr>
-              <td colSpan={columns.length} className="text-center py-4">
-                No employees found
-              </td>
-            </tr>
-          ) : (
-            table.getRowModel().rows.map((row) => (
-              <tr key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="border px-4 py-2">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
+    <div className="max-w-7xl mx-auto p-6">
+      <h2 className="text-3xl font-bold mb-6">Employee List</h2>
+      <div className="overflow-x-auto border rounded-lg shadow-sm">
+        <table className="table-auto w-full border-collapse border border-gray-300">
+          <thead className="bg-gray-100">
+            {table.getHeaderGroups().map((hg) => (
+              <tr key={hg.id}>
+                {hg.headers.map((h) => (
+                  <th
+                    key={h.id}
+                    className="border border-gray-300 px-5 py-3 text-left font-semibold text-gray-700"
+                  >
+                    {flexRender(h.column.columnDef.header, h.getContext())}
+                  </th>
                 ))}
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ))}
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={columns.length}
+                  className="text-center py-6 text-gray-500 italic"
+                >
+                  No employees found
+                </td>
+              </tr>
+            ) : (
+              table.getRowModel().rows.map((row) => (
+                <tr
+                  key={row.id}
+                  className="hover:bg-gray-50 transition-colors duration-200"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <td
+                      key={cell.id}
+                      className="border border-gray-300 px-5 py-3 align-middle"
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
 
       {/* Pay Modal */}
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={() => setModalIsOpen(false)}
-        className="bg-white max-w-md mx-auto mt-24 p-6 rounded shadow"
+        className="bg-white max-w-md mx-auto mt-24 p-6 rounded shadow-lg outline-none"
         overlayClassName="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-start z-50"
       >
-        <h3 className="text-xl font-semibold mb-4">Pay {selectedEmployee?.name}</h3>
+        <h3 className="text-2xl font-semibold mb-5">Pay {selectedEmployee?.name}</h3>
         <div className="flex flex-col gap-4">
+          <label className="font-medium">Salary</label>
           <input
-            type="text"
-            value={selectedEmployee?.salary}
             readOnly
-            className="input input-bordered"
+            value={`$${selectedEmployee?.salary || ""}`}
+            className="input input-bordered mb-2"
           />
+          <label className="font-medium">Month</label>
           <input
             type="text"
             placeholder="Month (e.g. July)"
@@ -207,6 +244,7 @@ const EmployeeList = () => {
             onChange={(e) => setMonth(e.target.value)}
             className="input input-bordered"
           />
+          <label className="font-medium">Year</label>
           <input
             type="number"
             placeholder="Year (e.g. 2025)"
@@ -214,11 +252,17 @@ const EmployeeList = () => {
             onChange={(e) => setYear(e.target.value)}
             className="input input-bordered"
           />
-          <div className="flex justify-end gap-2">
-            <button className="btn btn-secondary" onClick={() => setModalIsOpen(false)}>
+          <div className="flex justify-end gap-3 mt-6">
+            <button
+              className="btn btn-secondary px-5 py-2 rounded-md"
+              onClick={() => setModalIsOpen(false)}
+            >
               Cancel
             </button>
-            <button className="btn btn-primary" onClick={handlePaySubmit}>
+            <button
+              className="btn btn-primary px-5 py-2 rounded-md"
+              onClick={handlePaySubmit}
+            >
               Submit
             </button>
           </div>

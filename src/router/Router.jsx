@@ -6,6 +6,7 @@ import AllEmployeeList from "../pages/Admin/AllEmployeeList";
 import Payroll from "../pages/Admin/Payroll";
 import Login from "../pages/Authentication/Login";
 import Register from "../pages/Authentication/Register";
+import Dashboard from "../pages/Dashboard";
 import PaymentHistory from "../pages/employee/PaymentHistory";
 import WorkSheet from "../pages/employee/WorkSheet";
 import Home from "../pages/Home/Home";
@@ -57,6 +58,10 @@ export const router = createBrowserRouter([
     ,
      errorElement: <ErrorPage />,
     children: [
+       {
+        path: '/dashboard/home',
+        element: <Dashboard />
+      },
       {
         path: '/dashboard/workSheet',
         element: <WorkSheet />

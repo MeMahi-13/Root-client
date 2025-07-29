@@ -21,7 +21,7 @@ const Navbar = () => {
   };
 
   const publicLinks = [{ to: '/contact-us', label: 'Contact' }];
-  const authLinks = user ? [{ to: '/dashboard', label: 'Dashboard' }] : [{ to: '/login', label: 'Login' }];
+  const authLinks = user ? [{ to: '/dashboard/home', label: 'Dashboard' }] : [{ to: '/login', label: 'Login' }];
 
   return (
     <header className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
