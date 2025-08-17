@@ -1,9 +1,10 @@
-import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from 'react';
-import { HiOutlineMenu, HiOutlineX } from 'react-icons/hi';
-import { Link, NavLink } from 'react-router-dom';
-import Swal from 'sweetalert2';
-import UseAuth from '../hooks/UseAuth';
+import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
+import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
+import { Link, NavLink } from "react-router-dom";
+import Swal from "sweetalert2";
+import UseAuth from "../hooks/UseAuth";
+import ThemeToggle from "./ThemeToggle"; // make sure to import this
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -13,25 +14,61 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       await signOut();
-      Swal.fire('Logged out!', '', 'success');
+      Swal.fire("Logged out!", "", "success");
       setShowLogout(false);
     } catch (err) {
       console.error(err);
     }
   };
 
-  const publicLinks = [{ to: '/contact-us', label: 'Contact' }];
-  const authLinks = user ? [{ to: '/dashboard/home', label: 'Dashboard' }] : [{ to: '/login', label: 'Login' }];
+  const publicLinks = [
+    { to: "/all-services", label: "Services" },
+    { to: "/menu", label: "Menu" },
+    { to: "/blogs", label: "Blog" },
+    { to: "/contact-us", label: "Contact" },
+  ];
+
+  const authLinks = user
+    ? [
+        { to: "/dashboard/home", label: "Dashboard" },
+        { to: "/our-team", label: "Our Team" },
+      ]
+    : [{ to: "/login", label: "Login" }];
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
+    <header className="fixed top-0 left-0 w-full bg-white dark:bg-black shadow-md z-50">
       <div className="flex items-center justify-between py-4 px-6 md:px-10">
-        <Link to="/" className="heading-script text-black text-5xl font-bold">Root</Link>
+        {/* Logo */}
+        <Link
+          to="/"
+          className="heading-script text-black dark:text-white text-4xl font-bold"
+        >
+          Root
+        </Link>
+         {/* Theme Toggle */}
+          <ThemeToggle />
 
-        {/* Desktop Content */}
-        <nav className="hidden md:flex items-center space-x-6 relative">
-          {user && (
-            <div className="relative mr-4">
+        {/* Centered Nav */}
+        <nav className="hidden md:flex flex-1 justify-center space-x-6">
+          {[...publicLinks].map(({ to, label }) => (
+            <NavLink
+              key={to}
+              to={to}
+              className={({ isActive }) =>
+                isActive
+                  ? "text-black dark:text-white font-semibold"
+                  : "text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+              }
+            >
+              {label}
+            </NavLink>
+          ))}
+        </nav>
+
+        {/* Right side: Auth/User + Theme Toggle */}
+        <div className="flex items-center space-x-4">
+          {user ? (
+            <div className="relative">
               <div
                 className="flex items-center space-x-2 cursor-pointer"
                 onClick={() => setShowLogout(!showLogout)}
@@ -41,7 +78,9 @@ const Navbar = () => {
                   alt={user.displayName}
                   className="w-9 h-9 rounded-full"
                 />
-                <span className="text-sm text-gray-700">{user.displayName}</span>
+                <span className="text-sm text-gray-700 dark:text-gray-300">
+                  {user.displayName}
+                </span>
               </div>
 
               <AnimatePresence>
@@ -50,11 +89,11 @@ const Navbar = () => {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    className="absolute right-0 mt-2 bg-white shadow-md rounded-md overflow-hidden z-10"
+                    className="absolute right-0 mt-2 bg-white dark:bg-gray-800 shadow-md rounded-md overflow-hidden z-10"
                   >
                     <button
                       onClick={handleLogout}
-                      className="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 text-left w-full"
+                      className="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-left w-full"
                     >
                       Logout
                     </button>
@@ -62,22 +101,19 @@ const Navbar = () => {
                 )}
               </AnimatePresence>
             </div>
+          ) : (
+            <NavLink
+              to="/login"
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Login
+            </NavLink>
           )}
 
-          {[...authLinks, ...publicLinks].map(({ to, label }) => (
-            <NavLink
-              key={to}
-              to={to}
-              className={({ isActive }) =>
-                isActive ? 'text-black font-semibold' : 'text-gray-700 hover:text-blue-500'
-              }
-            >
-              {label}
-            </NavLink>
-          ))}
-        </nav>
+         
+        </div>
 
-        {/* Mobile Hamburger Button */}
+        {/* Mobile Hamburger */}
         <button className="md:hidden" onClick={() => setOpen((o) => !o)}>
           {open ? <HiOutlineX size={24} /> : <HiOutlineMenu size={24} />}
         </button>
@@ -86,25 +122,31 @@ const Navbar = () => {
       {/* Mobile Menu */}
       <nav
         className={`
-          fixed top-0 left-0 h-full bg-white w-3/4 max-w-xs shadow-lg
-          transform ${open ? 'translate-x-0' : '-translate-x-full'}
+          fixed top-0 left-0 h-full bg-white dark:bg-gray-900 w-3/4 max-w-xs shadow-lg
+          transform ${open ? "translate-x-0" : "-translate-x-full"}
           transition-transform duration-300 ease-in-out
           md:hidden z-50
         `}
       >
         <div className="flex justify-end p-4">
-          <HiOutlineX size={24} className="cursor-pointer" onClick={() => setOpen(false)} />
+          <HiOutlineX
+            size={24}
+            className="cursor-pointer"
+            onClick={() => setOpen(false)}
+          />
         </div>
 
         {user && (
-          <div className="px-6 py-4 border-b">
+          <div className="px-6 py-4 border-b dark:border-gray-700">
             <div className="flex items-center space-x-3 mb-2">
               <img
                 src={user.photoURL}
                 alt={user.displayName}
                 className="w-9 h-9 rounded-full"
               />
-              <span className="text-sm font-medium">{user.displayName}</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {user.displayName}
+              </span>
             </div>
             <button
               onClick={() => {
@@ -124,7 +166,11 @@ const Navbar = () => {
             to={to}
             onClick={() => setOpen(false)}
             className={({ isActive }) =>
-              `block px-6 py-4 ${isActive ? 'text-black font-semibold' : 'text-gray-700 hover:bg-gray-100'}`
+              `block px-6 py-4 ${
+                isActive
+                  ? "text-black dark:text-white font-semibold"
+                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+              }`
             }
           >
             {label}

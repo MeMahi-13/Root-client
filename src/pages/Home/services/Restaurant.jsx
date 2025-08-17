@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Link } from 'react-router';
 
 const services = [
   {
@@ -10,7 +11,7 @@ const services = [
 ];
 
 const Restaurant = () => (
-  <section className="py-16 bg-[#f5f3ee]">
+  <section className="py-16 bg-[#f5f3ee] dark:bg-base-200">
     <div className="max-w-6xl mx-auto px-6">
       <motion.div
         className="flex flex-col-reverse md:flex-row items-center gap-8"
@@ -24,12 +25,13 @@ const Restaurant = () => (
           <h3 className="text-3xl md:text-4xl font-semibold">
             {services[0].title}
           </h3>
-          <p className="text-gray-700 leading-relaxed md:text-lg">
+          <p className="text-gray-700 dark:text-white leading-relaxed md:text-lg">
             {services[0].description}
           </p>
+         <Link to="/all-services">
           <button className="mt-4 px-6 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 transition">
             Learn More
-          </button>
+          </button></Link>
         </div>
 
         {/* Image Section with Smaller Width */}

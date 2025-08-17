@@ -1,8 +1,8 @@
 const Banner = () => (
-  <div className="bg-[#f5f3ee] flex w-screen h-screen overflow-hidden">
+  <div className="bg-[#f5f3ee] dark:bg-base-100 text-black dark:text-white flex w-screen h-screen overflow-hidden">
     {/* Hero Text */}
     <div className="px-38 flex flex-col justify-center">
-      <h1 className="font-light text-6xl leading-tight mb-6 text-black">
+      <h1 className="font-light text-6xl leading-tight mb-6  text-black dark:text-white">
         Rooted <br /> in its <br /> origins
       </h1>
       <button className="w-max bg-gray-800 text-white px-6 py-3 rounded-md">
@@ -15,7 +15,7 @@ const Banner = () => (
       <p
         className={`
           [writing-mode:vertical-rl]
-          text-gray-700 uppercase tracking-widest
+          text-gray-700 dark:text-white uppercase tracking-widest
         `}
       >
         Reconnect with Nature, Reconnect with Yourself

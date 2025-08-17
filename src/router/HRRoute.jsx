@@ -8,7 +8,7 @@ const HRRoute = ({ children }) => {
 
   if (loading || isPending) return <p>Loading...</p>;
 
-  if (user && role === 'hr') {
+  if (user && role === 'HR') {
     return children;
   }
 

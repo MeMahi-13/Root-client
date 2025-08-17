@@ -12,6 +12,7 @@ import Dashboard from "../pages/Dashboard";
 import PaymentHistory from "../pages/employee/PaymentHistory";
 import WorkSheet from "../pages/employee/WorkSheet";
 import Home from "../pages/Home/Home";
+import AllService from "../pages/Home/services/AllService";
 import Details from "../pages/hr/Details";
 import EmployeeList from "../pages/hr/EmplyeeList";
 import Progress from "../pages/hr/Progress";
@@ -27,15 +28,15 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: <HomeLayout />,
-     errorElement: <ErrorPage />,
+    errorElement: <ErrorPage />,
     children: [
       {
         index: true,
         element: <Home />
       },
       {
-        path:'/forbidden',
-        element:<Forbidden/>
+        path: '/forbidden',
+        element: <Forbidden />
       }
     ]
 
@@ -55,16 +56,20 @@ export const router = createBrowserRouter([
       {
         path: 'contact-us',
         element: <ContactUs />
+      },
+       {
+        path: 'all-services',
+        element: <AllService />
       }
     ]
   },
   {
     path: '/dashboard',
-    element:<PrivateRoute> <DashboardLayout></DashboardLayout></PrivateRoute>
+    element: <PrivateRoute> <DashboardLayout></DashboardLayout></PrivateRoute>
     ,
-     errorElement: <ErrorPage />,
+    errorElement: <ErrorPage />,
     children: [
-       {
+      {
         path: '/dashboard/home',
         element: <Dashboard />
       },
@@ -85,32 +90,33 @@ export const router = createBrowserRouter([
         element: <HRRoute><Details /></HRRoute>
 
       },
-            {
+      {
         path: "/dashboard/progress",
         element: <HRRoute><Progress /></HRRoute>
       },
-       {
+      {
         path: "/dashboard/all-employees",
-        element:<AdminRoute> <AllEmployeeList /></AdminRoute>
+        element: <AdminRoute> <AllEmployeeList /></AdminRoute>
       },
-       {
+      {
         path: "/dashboard/payroll",
         element: <AdminRoute><Payroll /></AdminRoute>
       },
       {
         path: '/dashboard/payment/:paymentId',
-        element: <AdminRoute><PayGate/></AdminRoute>
+        element: <AdminRoute><PayGate /></AdminRoute>
       },
+
       {
-         
+
         path: '/dashboard/makeAdmin',
-        element:<AdminRoute> <MakeAdmin/></AdminRoute>
-      
+        element: <AdminRoute> <MakeAdmin /></AdminRoute>
+
       },
       {
-          
+
         path: '/dashboard/messages',
-        element:<AdminRoute><Messages/></AdminRoute>
+        element: <AdminRoute><Messages /></AdminRoute>
       }
 
     ]

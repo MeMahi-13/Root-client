@@ -8,13 +8,13 @@ import Testimonial from "./Testimonial";
 
 const Home = () => {
   return (
-    <div className="bg-[#f5f3ee]">
+    <div className="bg-[#f5f3ee] dark:bg-base-100 text-black dark:text-white">
     
       <Banner/>
       <Services/>
       <Restaurant/>
       <Spa/>
-      <div className="bg-white">
+      <div className="bg-white dark:bg-base-100 text-black dark:text-white">
         <BookingSearch/>
       </div>
       <Suite/>

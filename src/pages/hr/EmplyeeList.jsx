@@ -30,27 +30,29 @@ const EmployeeList = () => {
       .catch(console.error);
   }, []);
 
-  const toggleVerify = async (emp) => {
-    const updated = { isVerified: !emp.isVerified };
-    const res = await fetch(
-      `${import.meta.env.VITE_API_URL}/users/${emp._id}`,
-      {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updated),
-      }
-    );
+ const toggleVerify = async (emp) => {
+  const updated = { isVerified: !emp.isVerified };
 
-    if (res.ok) {
-      setEmployees((prev) =>
-        prev.map((e) =>
-          e._id === emp._id ? { ...e, isVerified: updated.isVerified } : e
-        )
-      );
-    } else {
-      Swal.fire("Error", "Failed to update verification", "error");
+  const res = await fetch(
+    `${import.meta.env.VITE_API_URL}/users/verify/${emp._id}`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updated),
     }
-  };
+  );
+
+  if (res.ok) {
+    setEmployees((prev) =>
+      prev.map((e) =>
+        e._id === emp._id ? { ...e, isVerified: updated.isVerified } : e
+      )
+    );
+  } else {
+    Swal.fire("Error", "Failed to update verification", "error");
+  }
+};
+
 
   const handlePayClick = (emp) => {
     setSelectedEmployee(emp);

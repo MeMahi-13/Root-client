@@ -1,5 +1,7 @@
-export default {
-  content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
-  theme: { extend: {} },
-  plugins: [],
+export const theme = {
+    extend: {
+        fontFamily: {
+            roboto: ['Open Sans', 'sans-serif'],
+        },
+    },
 };

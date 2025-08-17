@@ -5,15 +5,24 @@ const Payroll = () => {
   const [requests, setRequests] = useState([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/payments`)
-      .then((res) => res.json())
-      .then((data) => {
-        // console.log("Fetched payments data:", data);
-        setRequests(Array.isArray(data) ? data : data.payments || []);
-      })
-      .catch((err) => console.error("Failed to fetch payments:", err));
-  }, []);
+ useEffect(() => {
+  fetch(`${import.meta.env.VITE_API_URL}/payments?limit=1000`)
+    .then((res) => res.json())
+    .then((data) => {
+      // console.log("Fetched payments data:", data);
+      if (data?.payments && Array.isArray(data.payments)) {
+        setRequests(data.payments);
+      } else {
+        setRequests([]);
+      }
+    })
+    .catch((err) => {
+      console.error("Failed to fetch payments:", err);
+      setRequests([]);
+    });
+}, []);
+
+
 
   const handlePay = async (id) => {
     navigate(`/dashboard/payment/${id}`);

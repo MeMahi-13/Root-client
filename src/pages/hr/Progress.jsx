@@ -33,10 +33,12 @@ const Progress = () => {
   }, [selectedEmail, selectedMonth, axiosSecure]);
 
   // Function to get employee name by email
-  const getEmployeeName = (email) => {
-    const employee = employees.find(emp => emp.email === email);
-    return employee ? employee.name : "Unknown";
-  };
+ const getEmployeeName = (email) => {
+  if (!email) return "Unknown";
+  const employee = employees.find(emp => emp.email.toLowerCase() === email.toLowerCase());
+  return employee ? employee.name : "Unknown";
+};
+
 
   return (
     <div className="max-w-6xl mx-auto p-4">

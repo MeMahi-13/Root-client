@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Link } from 'react-router';
 
 const services = [
   {
@@ -11,11 +12,9 @@ const services = [
 
 const Services = () => (
   <div>
-   <div className='flex justify-between'>
-     {/* <h1 className='text-5xl text-left p-10 w-1/3'>The otherworldly luxury of space and time</h1> */}
-    <h1 className='text-5xl p-10 pt-14'>Included services</h1>
-   </div>
-    <section className="py-16 bg-[#f5f3ee]">
+   
+    <section className="py-16 bg-[#f5f3ee] dark:bg-gray-800">
+       <h1 className='text-5xl p-10 pb-25'>Included services</h1>
     <div className="max-w-6xl mx-auto px-6">
       <motion.div
         className="flex flex-col md:flex-row items-center md:items-start gap-8"
@@ -36,10 +35,11 @@ const Services = () => (
         {/* Text */}
         <div className="space-y-4 px-4 md:px-0">
           <h3 className="text-3xl md:text-4xl font-semibold">{services[0].title}</h3>
-          <p className="text-gray-700 leading-relaxed">{services[0].description}</p>
-          <button className="mt-4 inline-block px-6 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 transition">
+          <p className="text-gray-700 dark:text-white leading-relaxed">{services[0].description}</p>
+         <Link to="all-services">
+          <button className="mt-4 inline-block px-6 py-2 dark:bg-base-200 bg-gray-800 text-white rounded hover:bg-gray-700 transition">
             Learn More
-          </button>
+          </button></Link>
         </div>
       </motion.div>
     </div>
