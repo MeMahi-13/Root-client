@@ -17,6 +17,7 @@ import Details from "../pages/hr/Details";
 import EmployeeList from "../pages/hr/EmplyeeList";
 import Progress from "../pages/hr/Progress";
 import MakeAdmin from "../pages/MakeAdmin";
+import FullMenu from "../pages/Menu/Menu";
 import ErrorPage from "../pages/others/ErrorPage";
 import Forbidden from "../pages/others/Forbidden";
 import PayGate from "../pages/PayGate/PayGate";
@@ -60,6 +61,10 @@ export const router = createBrowserRouter([
        {
         path: 'all-services',
         element: <AllService />
+      },
+       {
+        path: 'menu',
+        element: <FullMenu />
       }
     ]
   },

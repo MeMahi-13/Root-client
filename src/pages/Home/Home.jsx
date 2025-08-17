@@ -1,5 +1,6 @@
 import Banner from "./Banner";
 import BookingSearch from "./BookingSearch";
+import HomeMenu from "./HomeMenu";
 import Restaurant from "./services/Restaurant";
 import Services from "./services/Services";
 import Spa from "./services/Spa";
@@ -8,7 +9,7 @@ import Testimonial from "./Testimonial";
 
 const Home = () => {
   return (
-    <div className="bg-[#f5f3ee] dark:bg-base-100 text-black dark:text-white">
+    <div className=" font-roboto bg-[#f5f3ee] dark:bg-base-100 text-black dark:text-white">
     
       <Banner/>
       <Services/>
@@ -18,6 +19,7 @@ const Home = () => {
         <BookingSearch/>
       </div>
       <Suite/>
+      <HomeMenu/>
       <Testimonial/>
     </div>
   );
