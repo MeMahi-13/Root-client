@@ -7,6 +7,7 @@ import Messages from "../pages/Admin/Messages";
 import Payroll from "../pages/Admin/Payroll";
 import Login from "../pages/Authentication/Login";
 import Register from "../pages/Authentication/Register";
+import BlogPage from "../pages/Blog/BlogPage";
 import ContactUs from "../pages/Contact";
 import Dashboard from "../pages/Dashboard";
 import PaymentHistory from "../pages/employee/PaymentHistory";
@@ -38,6 +39,22 @@ export const router = createBrowserRouter([
       {
         path: '/forbidden',
         element: <Forbidden />
+      },
+       {
+        path: 'contact-us',
+        element: <ContactUs />
+      },
+       {
+        path: 'all-services',
+        element: <AllService />
+      },
+       {
+        path: 'menu',
+        element: <FullMenu />
+      },
+       {
+        path: 'blogs',
+        element: <BlogPage />
       }
     ]
 
@@ -54,18 +71,7 @@ export const router = createBrowserRouter([
         path: 'register',
         element: <Register />
       },
-      {
-        path: 'contact-us',
-        element: <ContactUs />
-      },
-       {
-        path: 'all-services',
-        element: <AllService />
-      },
-       {
-        path: 'menu',
-        element: <FullMenu />
-      }
+     
     ]
   },
   {

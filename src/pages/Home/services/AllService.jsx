@@ -45,7 +45,7 @@ const AllService = () => {
   };
 
   return (
-   <div className="roboto bg-white dark:bg-base-200"> 
+   <div className="roboto py-17 bg-white dark:bg-base-200"> 
      <div className="p-6 max-w-7xl mx-auto bg-white dark:bg-base-200">
         <h1 className="text-black dark:text-white text-4xl font-semibold text-center py-10 mb-5">Explore Our Services </h1>
       

@@ -1,5 +1,6 @@
 import Banner from "./Banner";
 import BookingSearch from "./BookingSearch";
+import HomeBlog from "./HomeBlog";
 import HomeMenu from "./HomeMenu";
 import Restaurant from "./services/Restaurant";
 import Services from "./services/Services";
@@ -21,6 +22,7 @@ const Home = () => {
       <Suite/>
       <HomeMenu/>
       <Testimonial/>
+      <HomeBlog/>
     </div>
   );
 };

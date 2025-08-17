@@ -28,7 +28,7 @@ const DashboardLayout = () => {
   const normalizedRole = role?.toLowerCase();
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-100 text-black dark:text-white">
       {/* Sidebar */}
       <aside
         className={`fixed z-40 top-0 left-0 h-screen w-64 bg-gray-800 text-white transform transition-transform duration-300 ease-in-out
